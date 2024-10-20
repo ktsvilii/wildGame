@@ -49,6 +49,7 @@ export const useProgressStore = create<ProgressState>(set => ({
 
       useUpgradeStore.getState().checkIsPossibleUpgradeEnergy();
       useUpgradeStore.getState().checkIsPossibleUpgradeDamage();
+      useUpgradeStore.getState().checkIsPossibleUpgradeRecharge();
 
       return {
         coins: newScore,
@@ -70,6 +71,7 @@ export const useProgressStore = create<ProgressState>(set => ({
 
       useUpgradeStore.getState().checkIsPossibleUpgradeEnergy();
       useUpgradeStore.getState().checkIsPossibleUpgradeDamage();
+      useUpgradeStore.getState().checkIsPossibleUpgradeRecharge();
 
       return {
         coins: newScore,

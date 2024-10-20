@@ -22,6 +22,7 @@ export const useEnergyStore = create(
         if (state.currentEnergy >= amountToUse) {
           useUpgradeStore.getState().checkIsPossibleUpgradeEnergy();
           useUpgradeStore.getState().checkIsPossibleUpgradeDamage();
+          useUpgradeStore.getState().checkIsPossibleUpgradeRecharge();
           return { currentEnergy: state.currentEnergy - amountToUse };
         }
         return state;

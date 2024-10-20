@@ -10,7 +10,7 @@ const EnergyBoard: FC = () => {
       <p className='text-3xl'>
         {currentEnergy} / {maxEnergy}
       </p>
-      <ImPower className='ml-5 absolute right-24' size={28} />
+      <ImPower className='ml-5' size={28} />
     </div>
   );
 };
