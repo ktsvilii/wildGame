@@ -4,10 +4,22 @@ import ScoreBoard from '../../components/ScoreBoard';
 
 import { GiBiceps } from 'react-icons/gi';
 import { ImPower } from 'react-icons/im';
+import WildCoin from '../../assets/wildCoin.png';
 import { useUpgradeStore } from '../../stores/useUpgradeStore';
+import { DamageLevels, EnergyCapLevels } from '../../types/upgrades';
 
 export const Upgrades: FC = () => {
-  const { canUpgradeDamage, canUpgradeEnergy, upgradeEnergyLevel, upgradeDamageLevel } = useUpgradeStore();
+  const {
+    canUpgradeDamage,
+    canUpgradeEnergy,
+    currentDamageLevel,
+    currentEnergyLevel,
+    upgradeEnergyLevel,
+    upgradeDamageLevel,
+  } = useUpgradeStore();
+
+  const nextDamageUpgradePrice = DamageLevels[currentDamageLevel + 1].price;
+  const nextEnergyUpgradePrice = EnergyCapLevels[currentEnergyLevel + 1].price;
 
   return (
     <div className='flex flex-col items-center gap-7'>
@@ -17,13 +29,15 @@ export const Upgrades: FC = () => {
 
       <div className='flex flex-col gap-20 flex-grow p-5'>
         <UpgradeButton
-          title='Get stronger!'
+          title='Hit power'
+          nextUpgrade={nextDamageUpgradePrice}
           handleUpgrade={canUpgradeDamage ? upgradeDamageLevel : undefined}
           Icon={GiBiceps}
           canUpgrade={canUpgradeDamage}
         />
         <UpgradeButton
-          title='Get more resilient!'
+          title='Max energy'
+          nextUpgrade={nextEnergyUpgradePrice}
           handleUpgrade={canUpgradeEnergy ? upgradeEnergyLevel : undefined}
           Icon={ImPower}
           canUpgrade={canUpgradeEnergy}
@@ -36,20 +50,32 @@ export const Upgrades: FC = () => {
 interface UpgradeButtonProps {
   title: string;
   canUpgrade: boolean;
+  nextUpgrade: number;
   Icon: React.ElementType;
   handleUpgrade?: () => void;
 }
 
-const UpgradeButton: FC<UpgradeButtonProps> = ({ title, Icon, canUpgrade, handleUpgrade }) => {
+const UpgradeButton: FC<UpgradeButtonProps> = ({ title, Icon, canUpgrade, nextUpgrade, handleUpgrade }) => {
   return (
     <button
-      className='btn p-10 size-full card bg-base-100 w-full shadow-xl border-gray-600 border'
+      className='btn p-5 size-full bg-base-100 shadow-xl border-gray-600 border'
       disabled={!canUpgrade && !handleUpgrade}
       onClick={handleUpgrade}
     >
-      <div className='flex flex-row justify-center items-center gap-10'>
-        <h2 className='flex-1 text-2xl '>{title}</h2>
-        <Icon size={100} />
+      <div className='flex flex-row justify-between flex-1'>
+        <div>
+          <h2 className='text-2xl text-start'>{title}</h2>
+          <div className='text-xl flex flex-row items-center whitespace-pre-wrap'>
+            <span>Upgrade price: </span>
+            <span>{nextUpgrade}</span>
+            <img
+              src={WildCoin}
+              className={`inline-block w-8 h-8 ${!canUpgrade && !handleUpgrade && 'filter grayscale'}`}
+              alt='Wild Coin'
+            />
+          </div>
+        </div>
+        <Icon size={60} />
       </div>
     </button>
   );

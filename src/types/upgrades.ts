@@ -4,7 +4,7 @@ export type UpgradeLevels =
 
 export const DamageLevels: Record<string, { newDamage: number; price: number }> = {
   '1': { newDamage: 1, price: 0 },
-  '2': { newDamage: 2, price: 1024 },
+  '2': { newDamage: 2, price: 2 },
   '3': { newDamage: 3, price: 2048 },
   '4': { newDamage: 4, price: 4096 },
   '5': { newDamage: 5, price: 8192 },
