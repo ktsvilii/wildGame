@@ -29,7 +29,7 @@ export const Upgrades: FC = () => {
 
   return (
     <div className='flex flex-col items-center gap-7'>
-      <h1 className='text-4xl mt-10 font-bold'>Upgrade your stats</h1>
+      <h1 className='text-3xl mt-6 font-bold'>Upgrade your stats</h1>
 
       <ScoreBoard />
 
@@ -65,7 +65,7 @@ export const Upgrades: FC = () => {
 interface UpgradeButtonProps {
   title: string;
   canUpgrade: boolean;
-  nextUpgrade: number;
+  nextUpgrade?: number;
   Icon: React.ElementType;
   handleUpgrade?: () => void;
 }
@@ -73,14 +73,14 @@ interface UpgradeButtonProps {
 const UpgradeButton: FC<UpgradeButtonProps> = ({ title, Icon, canUpgrade, nextUpgrade, handleUpgrade }) => {
   return (
     <button
-      className='btn p-5 gap-10 size-full flex justify-start min-w-96 bg-base-100 shadow-xl border-gray-600 border'
+      className='btn p-5 w-full h-min min-w-80 flex justify-start bg-base-100 shadow-xl border-gray-600 border'
       disabled={!canUpgrade && !handleUpgrade}
       onClick={handleUpgrade}
     >
       <div className='flex-1'>
-        <h2 className='text-2xl text-start'>{title}</h2>
+        <h2 className='text-xl text-start'>{title}</h2>
         {nextUpgrade ? (
-          <div className='text-xl flex flex-row justify-between w-100 items-center whitespace-pre-wrap'>
+          <div className='text-md flex flex-row justify-between w-100 items-center whitespace-pre-wrap'>
             <span>Upgrade price: </span>
             <div className='flex items-center gap-1'>
               <span>{nextUpgrade}</span>

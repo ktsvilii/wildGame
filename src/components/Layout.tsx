@@ -3,7 +3,7 @@ import Navbar from './Navbar';
 
 const Layout: FC<PropsWithChildren> = ({ children }) => {
   return (
-    <main className='min-h-screen box-border overflow-hidden'>
+    <main className='flex flex-col justify-between h-screen box-border overflow-hidden'>
       {children}
       <Navbar />
     </main>

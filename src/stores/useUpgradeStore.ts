@@ -3,6 +3,8 @@ import { subscribeWithSelector } from 'zustand/middleware';
 
 import { canUpgrade } from '../utils';
 import { useProgressStore } from './useProgressStore';
+import { useEnergyStore } from './useEnergyStore';
+import { useDamageStore } from './useDamageStore';
 import { EnergyCapLevels, DamageLevels, RechargeLevels } from '../types/upgrades';
 
 interface UpgradeStore {
@@ -104,6 +106,8 @@ export const useUpgradeStore = create(
             currentEnergyLevel: nextLevel,
           });
 
+          useEnergyStore.getState().setEnergy(useEnergyStore.getState().currentEnergy, nextEnergyCap.newEnergy);
+
           return {
             ...state,
             currentEnergyLevel: nextLevel,
@@ -128,6 +132,8 @@ export const useUpgradeStore = create(
           set({
             currentDamageLevel: nextLevel,
           });
+
+          useDamageStore.getState().setDamage(nextDamage.newDamage);
 
           return {
             ...state,

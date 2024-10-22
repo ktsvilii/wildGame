@@ -1,7 +1,7 @@
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './index.css';
-import Home from './Home';
+import { Boss } from './pages/Boss';
 import { Farm } from './pages/Farm';
 import NotFoundPage from './NotFoundPage';
 import Layout from './components/Layout';
@@ -28,15 +28,7 @@ const router = createBrowserRouter([
     path: '/boss',
     element: (
       <Layout>
-        <Home />
-      </Layout>
-    ),
-  },
-  {
-    path: '/fortuneWheel',
-    element: (
-      <Layout>
-        <Home />
+        <Boss />
       </Layout>
     ),
   },

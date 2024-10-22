@@ -11,11 +11,12 @@ export const useBossClickHandler = () => {
 
   const imageRef = useRef<HTMLButtonElement | null>(null);
 
-  const handleBossClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleBossInteraction = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
     if (currentEnergy - currentDamage >= 0) {
       const rect = event.currentTarget.getBoundingClientRect();
-      const x = event.clientX - rect.left;
-      const y = event.clientY - rect.top;
+      const x = 'touches' in event ? event.touches[0].clientX - rect.left : event.clientX - rect.left;
+      const y = 'touches' in event ? event.touches[0].clientY - rect.top : event.clientY - rect.top;
+
       addScore(currentDamage);
       spendEnergy(currentDamage);
 
@@ -48,5 +49,10 @@ export const useBossClickHandler = () => {
     }
   };
 
-  return { handleBossClick, imageRef, level };
+  const handleTouchStart = (event: React.TouchEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    handleBossInteraction(event);
+  };
+
+  return { handleBossClick: handleBossInteraction, handleTouchStart, imageRef, level };
 };

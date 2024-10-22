@@ -2,7 +2,7 @@ import { create } from 'zustand';
 
 import { useUpgradeStore } from './useUpgradeStore';
 
-export const BASE_LEVEL_SCORE = 50;
+export const BASE_LEVEL_SCORE = 150;
 
 const levels = new Array(5).fill(0).map((_, i) => BASE_LEVEL_SCORE * Math.pow(2, i));
 
@@ -61,6 +61,7 @@ export const useProgressStore = create<ProgressState>(set => ({
   calculateUpgrade: upgradePrice => {
     set(state => ({
       coins: state.coins - upgradePrice,
+      currentScore: state.coins - upgradePrice,
     }));
   },
 
