@@ -1,10 +1,12 @@
 import { Telegraf, Markup } from 'telegraf';
 import { config } from 'dotenv';
+import http from 'http';
 
 config();
 
 const token = process.env.TOKEN;
 const webAppUrl = process.env.WEB_APP_URL;
+const port = process.env.PORT || 3000;
 
 const bot = new Telegraf(token);
 
@@ -29,7 +31,15 @@ const sendInvite = context => {
 };
 
 bot.action('invite_friend', sendInvite);
-
 bot.command('invite_friend', sendInvite);
 
 bot.launch();
+
+http
+  .createServer((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end('Bot is running\n');
+  })
+  .listen(port, () => {
+    console.log(`Server running on port ${port}`);
+  });
