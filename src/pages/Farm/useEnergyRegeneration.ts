@@ -1,11 +1,10 @@
 import { useEffect } from 'react';
-import { useEnergyStore } from '../../stores/useEnergyStore';
-import { useUpgradeStore } from '../../stores/useUpgradeStore';
+
 import { RechargeLevels } from '../../types/upgrades';
+import { useProgressStore } from '../../stores/useProgressStore';
 
 export const useEnergyRegeneration = () => {
-  const { currentEnergy, maxEnergy, regenerateEnergy } = useEnergyStore();
-  const { currentRechargeLevel } = useUpgradeStore();
+  const { currentEnergy, maxEnergy, currentRechargeLevel, regenerateEnergy } = useProgressStore();
 
   useEffect(() => {
     const timerId = setInterval(regenerateEnergy, RechargeLevels[currentRechargeLevel].speed);
