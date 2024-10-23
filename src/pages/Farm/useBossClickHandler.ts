@@ -3,11 +3,15 @@ import styles from './Farm.module.scss';
 import { useProgressStore } from '../../stores/useProgressStore';
 import { useDamageStore } from '../../stores/useDamageStore';
 import { useEnergyStore } from '../../stores/useEnergyStore';
+import { updateCoinsAndSettings } from '../../api';
+import { useUpgradeStore } from '../../stores/useUpgradeStore';
+import { RechargeLevels } from '../../types/upgrades';
 
 export const useBossClickHandler = () => {
-  const { level, addScore } = useProgressStore();
+  const { level, coins, addScore } = useProgressStore();
   const { currentDamage } = useDamageStore();
-  const { currentEnergy, spendEnergy } = useEnergyStore();
+  const { currentEnergy, maxEnergy, spendEnergy } = useEnergyStore();
+  const { currentRechargeLevel } = useUpgradeStore();
 
   const imageRef = useRef<HTMLButtonElement | null>(null);
 
@@ -19,6 +23,12 @@ export const useBossClickHandler = () => {
 
       addScore(currentDamage);
       spendEnergy(currentDamage);
+
+      const fullEnergyRestore =
+        new Date().getMilliseconds() +
+        (maxEnergy - (currentEnergy + currentDamage)) * RechargeLevels[currentRechargeLevel].speed;
+
+      updateCoinsAndSettings(coins + currentDamage, currentEnergy, currentDamage, maxEnergy, fullEnergyRestore);
 
       const randomX = (Math.random() - 0.5) * 20;
       const randomY = (Math.random() - 0.5) * 20;

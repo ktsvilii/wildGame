@@ -1,7 +1,7 @@
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './index.css';
-import { Boss } from './pages/Boss';
+import { Tasks } from './pages/Tasks';
 import { Farm } from './pages/Farm';
 import NotFoundPage from './NotFoundPage';
 import Layout from './components/Layout';
@@ -28,7 +28,7 @@ const router = createBrowserRouter([
     path: '/boss',
     element: (
       <Layout>
-        <Boss />
+        <Tasks />
       </Layout>
     ),
   },

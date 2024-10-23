@@ -20,14 +20,7 @@ interface UpgradeStore {
   upgradeDamageLevel: () => void;
   upgradeRechargeLevel: () => void;
 
-  setUpgradeLevels: (
-    newEnergyLevel: number,
-    newDamageLevel: number,
-    newRechargeLevel: number,
-    newCanUpgradeEnergy: boolean,
-    newCanUpgradeDamage: boolean,
-    newCanUpgradeRecharge: boolean,
-  ) => void;
+  setUpgradeLevels: (newEnergyLevel: number, newDamageLevel: number, newRechargeLevel: number) => void;
 
   checkIsPossibleUpgradeEnergy: () => boolean;
   checkIsPossibleUpgradeDamage: () => boolean;
@@ -43,22 +36,17 @@ export const useUpgradeStore = create(
     currentDamageLevel: 1,
     currentRechargeLevel: 1,
 
-    setUpgradeLevels: (
-      newEnergyLevel,
-      newDamageLevel,
-      newRechargeLevel,
-      newCanUpgradeEnergy,
-      newCanUpgradeDamage,
-      newCanUpgradeRecharge,
-    ) =>
+    setUpgradeLevels: (newEnergyLevel, newDamageLevel, newRechargeLevel) => {
       set({
         currentEnergyLevel: newEnergyLevel,
         currentDamageLevel: newDamageLevel,
         currentRechargeLevel: newRechargeLevel,
-        canUpgradeEnergy: newCanUpgradeEnergy,
-        canUpgradeDamage: newCanUpgradeDamage,
-        canUpgradeRecharge: newCanUpgradeRecharge,
-      }),
+      });
+
+      get().checkIsPossibleUpgradeEnergy();
+      get().checkIsPossibleUpgradeDamage();
+      get().checkIsPossibleUpgradeRecharge();
+    },
 
     checkIsPossibleUpgradeEnergy: () => {
       const { currentEnergyLevel } = get();

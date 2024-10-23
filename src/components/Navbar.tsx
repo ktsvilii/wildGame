@@ -12,9 +12,7 @@ const Navbar: FC = () => {
       <ul className='menu justify-around menu-horizontal px-1 w-full'>
         <NavItem to='/'>Farm</NavItem>
         <NavItem to='/upgrades'>Upgrade</NavItem>
-        <NavItem to='/boss' disabled>
-          Boss
-        </NavItem>
+        <NavItem to='/boss'>Tasks</NavItem>
       </ul>
     </div>
   );

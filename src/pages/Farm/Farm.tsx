@@ -22,12 +22,6 @@ export const Farm: FC = () => {
     handleTouchStart,
   } = useBossClickHandler();
 
-  const isTouchDevice = useRef<boolean>(false);
-
-  useEffect(() => {
-    isTouchDevice.current = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-  }, []);
-
   return (
     <div className='flex flex-col flex-grow gap-5 items-center justify-start'>
       <ProgressBar />
@@ -36,8 +30,8 @@ export const Farm: FC = () => {
         ref={imageRef}
         style={{ backgroundImage: `url(${BOSS_IMAGES[level]})` }}
         className={`${styles.image} relative`}
-        onClick={isTouchDevice.current ? undefined : handleBossClick}
-        onTouchStart={isTouchDevice.current ? handleTouchStart : undefined}
+        onClick={handleBossClick}
+        onTouchStart={handleTouchStart}
       ></button>
 
       <EnergyBoard />
