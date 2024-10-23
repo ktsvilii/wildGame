@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef } from 'react';
+import { FC } from 'react';
 import { useEnergyRegeneration } from './useEnergyRegeneration';
 import { useBossClickHandler } from './useBossClickHandler';
 import ProgressBar from '../../components/ProgressBar';

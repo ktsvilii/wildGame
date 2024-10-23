@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { useTasksStore } from '../../stores/useTasksStore';
 
 export const Tasks: FC = () => {
@@ -27,8 +27,6 @@ interface TaskProps {
 }
 
 export const Task: FC<TaskProps> = ({ href, title, description, reward, completed }) => {
-  const [isSubscribed, setIsSubscribed] = useState<boolean | null>(null);
-
   const handleLinkClick = () => {
     console.log(href);
     return;
