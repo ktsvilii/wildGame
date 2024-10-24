@@ -2,10 +2,16 @@ import { useEffect } from 'react';
 import { fetchTasks, getOrCreateUser } from '../api';
 import { useTasksStore } from '../stores/useTasksStore';
 import { useProgressStore } from '../stores/useProgressStore';
+import { useDamageStore } from '../stores/useDamageStore';
+import { useEnergyStore } from '../stores/useEnergyStore';
+import { useUpgradeStore } from '../stores/useUpgradeStore';
 
 export const useLayout = () => {
-  const { setDamage, setEnergy, setScore, setUpgradeLevels } = useProgressStore();
+  const { setScore } = useProgressStore();
+  const { setDamage } = useDamageStore();
+  const { setEnergy } = useEnergyStore();
   const { setTasks } = useTasksStore();
+  const { setUpgradeLevels } = useUpgradeStore();
 
   useEffect(() => {
     const initApp = async () => {
@@ -24,7 +30,7 @@ export const useLayout = () => {
       }
 
       setScore(coins);
-      setDamage(settings.currentDamage);
+      setDamage(settings.damage);
       setUpgradeLevels(upgrades.currentEnergyLevel, upgrades.currentDamageLevel, upgrades.currentRechargeLevel);
       setTasks(tasks);
     };

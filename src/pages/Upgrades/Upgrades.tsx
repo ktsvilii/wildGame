@@ -7,8 +7,8 @@ import { ImPower } from 'react-icons/im';
 import { FaHourglassHalf } from 'react-icons/fa6';
 
 import WildCoin from '../../assets/wildCoin.png';
+import { useUpgradeStore } from '../../stores/useUpgradeStore';
 import { DamageLevels, EnergyCapLevels, RechargeLevels } from '../../types/upgrades';
-import { useProgressStore } from '../../stores/useProgressStore';
 
 export const Upgrades: FC = () => {
   const {
@@ -21,7 +21,7 @@ export const Upgrades: FC = () => {
     upgradeEnergyLevel,
     upgradeDamageLevel,
     upgradeRechargeLevel,
-  } = useProgressStore();
+  } = useUpgradeStore();
 
   const nextDamageUpgradePrice = DamageLevels[currentDamageLevel + 1]?.price;
   const nextEnergyUpgradePrice = EnergyCapLevels[currentEnergyLevel + 1]?.price;

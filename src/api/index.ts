@@ -29,7 +29,7 @@ export const getOrCreateUser = async () => {
       currentRechargeLevel: 1,
     },
     settings: {
-      currentDamage: 1,
+      damage: 1,
       currentEnergy: 500,
       maxEnergy: 500,
     },

@@ -1,11 +1,17 @@
 import { useRef } from 'react';
 import styles from './Farm.module.scss';
 import { useProgressStore } from '../../stores/useProgressStore';
+import { useDamageStore } from '../../stores/useDamageStore';
+import { useEnergyStore } from '../../stores/useEnergyStore';
 import { updateCoinsAndSettings } from '../../api';
+import { useUpgradeStore } from '../../stores/useUpgradeStore';
 import { RechargeLevels } from '../../types/upgrades';
 
 export const useBossClickHandler = () => {
-  const { level, coins, currentEnergy, maxEnergy, currentDamage, currentRechargeLevel, addScore } = useProgressStore();
+  const { level, coins, addScore } = useProgressStore();
+  const { currentDamage } = useDamageStore();
+  const { currentEnergy, maxEnergy, spendEnergy } = useEnergyStore();
+  const { currentRechargeLevel } = useUpgradeStore();
 
   const imageRef = useRef<HTMLButtonElement | null>(null);
 
@@ -16,6 +22,7 @@ export const useBossClickHandler = () => {
       const y = 'touches' in event ? event.touches[0].clientY - rect.top : event.clientY - rect.top;
 
       addScore(currentDamage);
+      spendEnergy(currentDamage);
 
       const fullEnergyRestore =
         new Date().getMilliseconds() +
@@ -53,6 +60,7 @@ export const useBossClickHandler = () => {
   };
 
   const handleTouchStart = (event: React.TouchEvent<HTMLButtonElement>) => {
+    event.preventDefault();
     handleBossInteraction(event);
   };
 

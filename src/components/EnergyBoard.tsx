@@ -1,9 +1,9 @@
 import { FC } from 'react';
+import { useEnergyStore } from '../stores/useEnergyStore';
 import { ImPower } from 'react-icons/im';
-import { useProgressStore } from '../stores/useProgressStore';
 
 const EnergyBoard: FC = () => {
-  const { currentEnergy, maxEnergy } = useProgressStore();
+  const { currentEnergy, maxEnergy } = useEnergyStore();
 
   return (
     <div className='mt-5 flex flex-row items-center'>
