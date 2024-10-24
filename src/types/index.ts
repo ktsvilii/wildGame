@@ -3,7 +3,11 @@ export {};
 declare global {
   interface Window {
     Telegram: {
-      WebApp: { initDataUnsafe: { user: { id: number } } };
+      WebApp: {
+        expand(): unknown;
+        ready(): unknown;
+        initDataUnsafe: { user: { id: number } };
+      };
     };
   }
 }

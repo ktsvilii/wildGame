@@ -6,6 +6,7 @@ import { useEnergyStore } from '../../stores/useEnergyStore';
 import { updateCoinsAndSettings } from '../../api';
 import { useUpgradeStore } from '../../stores/useUpgradeStore';
 import { RechargeLevels } from '../../types/upgrades';
+import { useDebounce } from '../../hooks/useDebounce';
 
 export const useBossClickHandler = () => {
   const { level, coins, addScore } = useProgressStore();
@@ -14,6 +15,7 @@ export const useBossClickHandler = () => {
   const { currentRechargeLevel } = useUpgradeStore();
 
   const imageRef = useRef<HTMLButtonElement | null>(null);
+  const debouncedUpdateCoinsAndSettings = useDebounce(updateCoinsAndSettings, 300);
 
   const handleBossInteraction = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
     if (currentEnergy - currentDamage >= 0) {
@@ -24,11 +26,18 @@ export const useBossClickHandler = () => {
       addScore(currentDamage);
       spendEnergy(currentDamage);
 
+      const lastEnergyUpdate = new Date().getTime();
       const fullEnergyRestore =
-        new Date().getMilliseconds() +
-        (maxEnergy - (currentEnergy + currentDamage)) * RechargeLevels[currentRechargeLevel].speed;
+        lastEnergyUpdate + (maxEnergy - (currentEnergy + currentDamage)) * RechargeLevels[currentRechargeLevel].speed;
 
-      updateCoinsAndSettings(coins + currentDamage, currentEnergy, currentDamage, maxEnergy, fullEnergyRestore);
+      debouncedUpdateCoinsAndSettings(
+        coins + currentDamage,
+        currentEnergy,
+        currentDamage,
+        maxEnergy,
+        fullEnergyRestore,
+        lastEnergyUpdate,
+      );
 
       const randomX = (Math.random() - 0.5) * 20;
       const randomY = (Math.random() - 0.5) * 20;

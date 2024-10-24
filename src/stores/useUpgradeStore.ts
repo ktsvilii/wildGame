@@ -88,11 +88,9 @@ export const useUpgradeStore = create(
         const coins = useProgressStore.getState().coins;
 
         if (nextEnergyCap && coins >= nextEnergyCap.price) {
-          useProgressStore.getState().calculateUpgrade(nextEnergyCap.price);
+          useProgressStore.getState().upgrade(nextEnergyCap.price);
 
-          set({
-            currentEnergyLevel: nextLevel,
-          });
+          set({ currentEnergyLevel: nextLevel });
 
           useEnergyStore.getState().setEnergy(useEnergyStore.getState().currentEnergy, nextEnergyCap.newEnergy);
 
@@ -115,11 +113,9 @@ export const useUpgradeStore = create(
         const coins = useProgressStore.getState().coins;
 
         if (nextDamage && coins >= nextDamage.price) {
-          useProgressStore.getState().calculateUpgrade(nextDamage.price);
+          useProgressStore.getState().upgrade(nextDamage.price);
 
-          set({
-            currentDamageLevel: nextLevel,
-          });
+          set({ currentDamageLevel: nextLevel });
 
           useDamageStore.getState().setDamage(nextDamage.newDamage);
 
@@ -142,11 +138,9 @@ export const useUpgradeStore = create(
         const coins = useProgressStore.getState().coins;
 
         if (nextRecharge && coins >= nextRecharge.price) {
-          useProgressStore.getState().calculateUpgrade(nextRecharge.price);
+          useProgressStore.getState().upgrade(nextRecharge.price);
 
-          set({
-            currentRechargeLevel: nextLevel,
-          });
+          set({ currentRechargeLevel: nextLevel });
 
           return {
             ...state,

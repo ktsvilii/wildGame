@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useEffect, useRef } from 'react';
 import { useEnergyRegeneration } from './useEnergyRegeneration';
 import { useBossClickHandler } from './useBossClickHandler';
 import ProgressBar from '../../components/ProgressBar';
@@ -22,6 +22,12 @@ export const Farm: FC = () => {
     handleTouchStart,
   } = useBossClickHandler();
 
+  const isTouchDevice = useRef<boolean>(false);
+
+  useEffect(() => {
+    isTouchDevice.current = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  }, []);
+
   return (
     <div className='flex flex-col flex-grow gap-5 items-center justify-start'>
       <ProgressBar />
@@ -30,8 +36,8 @@ export const Farm: FC = () => {
         ref={imageRef}
         style={{ backgroundImage: `url(${BOSS_IMAGES[level]})` }}
         className={`${styles.image} relative`}
-        onClick={handleBossClick}
-        onTouchStart={handleTouchStart}
+        onClick={isTouchDevice.current ? undefined : handleBossClick}
+        onTouchStart={isTouchDevice.current ? handleTouchStart : undefined}
       ></button>
 
       <EnergyBoard />

@@ -9,6 +9,8 @@ import { FaHourglassHalf } from 'react-icons/fa6';
 import WildCoin from '../../assets/wildCoin.png';
 import { useUpgradeStore } from '../../stores/useUpgradeStore';
 import { DamageLevels, EnergyCapLevels, RechargeLevels } from '../../types/upgrades';
+import { handleUpgrade } from '../../api';
+import { useEnergyStore } from '../../stores/useEnergyStore';
 
 export const Upgrades: FC = () => {
   const {
@@ -23,9 +25,45 @@ export const Upgrades: FC = () => {
     upgradeRechargeLevel,
   } = useUpgradeStore();
 
+  const { currentEnergy } = useEnergyStore();
+
   const nextDamageUpgradePrice = DamageLevels[currentDamageLevel + 1]?.price;
   const nextEnergyUpgradePrice = EnergyCapLevels[currentEnergyLevel + 1]?.price;
   const nextRechargeUpgradePrice = RechargeLevels[currentRechargeLevel + 1]?.price;
+
+  const handleEnergyLevel = async () => {
+    upgradeEnergyLevel();
+    handleUpgrade(
+      currentEnergyLevel + 1,
+      currentDamageLevel,
+      currentRechargeLevel,
+      currentEnergy,
+      DamageLevels[currentDamageLevel].newDamage,
+      EnergyCapLevels[currentEnergyLevel + 1].newEnergy,
+    );
+  };
+  const handleDamageLevel = async () => {
+    upgradeDamageLevel();
+    handleUpgrade(
+      currentEnergyLevel,
+      currentDamageLevel + 1,
+      currentRechargeLevel,
+      currentEnergy,
+      DamageLevels[currentDamageLevel + 1].newDamage,
+      EnergyCapLevels[currentEnergyLevel].newEnergy,
+    );
+  };
+  const handleRechargeLevel = async () => {
+    upgradeRechargeLevel();
+    handleUpgrade(
+      currentEnergyLevel,
+      currentDamageLevel,
+      currentRechargeLevel + 1,
+      currentEnergy,
+      DamageLevels[currentDamageLevel].newDamage,
+      EnergyCapLevels[currentEnergyLevel].newEnergy,
+    );
+  };
 
   return (
     <div className='flex flex-col items-center gap-7'>
@@ -37,7 +75,7 @@ export const Upgrades: FC = () => {
         <UpgradeButton
           title='Hit power'
           nextUpgrade={nextDamageUpgradePrice}
-          handleUpgrade={canUpgradeDamage ? upgradeDamageLevel : undefined}
+          handleUpgrade={canUpgradeDamage ? handleDamageLevel : undefined}
           Icon={GiBiceps}
           canUpgrade={canUpgradeDamage}
         />
@@ -45,7 +83,7 @@ export const Upgrades: FC = () => {
         <UpgradeButton
           title='Max energy'
           nextUpgrade={nextEnergyUpgradePrice}
-          handleUpgrade={canUpgradeEnergy ? upgradeEnergyLevel : undefined}
+          handleUpgrade={canUpgradeEnergy ? handleEnergyLevel : undefined}
           Icon={ImPower}
           canUpgrade={canUpgradeEnergy}
         />
@@ -53,7 +91,7 @@ export const Upgrades: FC = () => {
         <UpgradeButton
           title='Energy recharge'
           nextUpgrade={nextRechargeUpgradePrice}
-          handleUpgrade={canUpgradeRecharge ? upgradeRechargeLevel : undefined}
+          handleUpgrade={canUpgradeRecharge ? handleRechargeLevel : undefined}
           Icon={FaHourglassHalf}
           canUpgrade={canUpgradeRecharge}
         />

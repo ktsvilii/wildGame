@@ -29,7 +29,7 @@ export const getOrCreateUser = async () => {
       currentRechargeLevel: 1,
     },
     settings: {
-      damage: 1,
+      currentDamage: 1,
       currentEnergy: 500,
       maxEnergy: 500,
     },
@@ -47,9 +47,31 @@ export const updateCoinsAndSettings = async (
   currentDamage: number,
   maxEnergy: number,
   fullEnergyRestore: number,
+  lastEnergyUpdate: number,
 ) => {
   await database
     .from('users')
-    .update({ coins, settings: { currentEnergy, currentDamage, maxEnergy }, fullEnergyRestore })
+    .update({ coins, settings: { currentEnergy, currentDamage, maxEnergy }, fullEnergyRestore, lastEnergyUpdate })
+    .eq('telegramId', USER_ID);
+};
+
+export const handleUpgrade = async (
+  currentEnergyLevel: number,
+  currentDamageLevel: number,
+  currentRechargeLevel: number,
+  currentEnergy: number,
+  currentDamage: number,
+  maxEnergy: number,
+) => {
+  await database
+    .from('users')
+    .update({
+      upgrades: {
+        currentEnergyLevel,
+        currentDamageLevel,
+        currentRechargeLevel,
+      },
+      settings: { currentEnergy, currentDamage, maxEnergy },
+    })
     .eq('telegramId', USER_ID);
 };
