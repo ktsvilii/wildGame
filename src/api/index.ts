@@ -34,6 +34,8 @@ export const getOrCreateUser = async () => {
       maxEnergy: 500,
     },
     fullEnergyRestore: null,
+    lastEnergyUpdate: null,
+    completedTasks: [],
     friends: {},
   };
 
@@ -72,6 +74,29 @@ export const handleUpgrade = async (
         currentRechargeLevel,
       },
       settings: { currentEnergy, currentDamage, maxEnergy },
+    })
+    .eq('telegramId', USER_ID);
+};
+
+export const fetchCompletedTasks = async () => {
+  await database.from('users').select('completedTasks').eq('telegramId', USER_ID);
+};
+
+export const completeTask = async (
+  completedTasks: string[],
+  task: Task,
+  currentCoins: number,
+  currentScore: number,
+) => {
+  const newCoins = currentCoins + task.reward;
+  const newScore = currentScore + task.reward;
+
+  await database
+    .from('users')
+    .update({
+      completedTasks: [...completedTasks, task.id],
+      coins: newCoins,
+      currentScore: newScore,
     })
     .eq('telegramId', USER_ID);
 };

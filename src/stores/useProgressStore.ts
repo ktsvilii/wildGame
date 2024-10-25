@@ -20,16 +20,13 @@ interface ProgressState {
   currentDamageLevel: number;
   currentRechargeLevel: number;
 
-  upgradeEnergyLevel: () => void;
-  upgradeDamageLevel: () => void;
-  upgradeRechargeLevel: () => void;
-
   setUpgradeLevels: (newEnergyLevel: number, newDamageLevel: number, newRechargeLevel: number) => void;
 
   checkPossibleUpgrades: () => { canUpgradeEnergy: boolean; canUpgradeDamage: boolean; canUpgradeRecharge: boolean };
   upgrade: (upgradePrice: number) => void;
 
   addScore: (points: number) => void;
+  addReward: (points: number) => void;
   regenerateEnergy: () => void;
 
   setScore: (newScore: number) => void;
@@ -79,51 +76,6 @@ export const useProgressStore = create<ProgressState>((set, get) => ({
     return { canUpgradeEnergy, canUpgradeDamage, canUpgradeRecharge };
   },
 
-  upgradeEnergyLevel: () =>
-    set(state => {
-      const nextLevel = state.currentEnergyLevel + 1;
-      const nextEnergyCap = EnergyCapLevels[nextLevel];
-      const { coins } = state;
-
-      if (nextEnergyCap && coins >= nextEnergyCap.price) {
-        state.upgrade(nextEnergyCap.price);
-
-        return { currentEnergyLevel: nextLevel, maxEnergy: nextEnergyCap.newEnergy };
-      }
-
-      return state;
-    }),
-
-  upgradeDamageLevel: () =>
-    set(state => {
-      const nextLevel = state.currentDamageLevel + 1;
-      const nextDamage = DamageLevels[nextLevel];
-      const { coins } = state;
-
-      if (nextDamage && coins >= nextDamage.price) {
-        state.upgrade(nextDamage.price);
-
-        return { currentDamageLevel: nextLevel, currentDamage: nextDamage.newDamage };
-      }
-
-      return state;
-    }),
-
-  upgradeRechargeLevel: () =>
-    set(state => {
-      const nextLevel = state.currentRechargeLevel + 1;
-      const nextRecharge = RechargeLevels[nextLevel];
-      const { coins } = state;
-
-      if (nextRecharge && coins >= nextRecharge.price) {
-        state.upgrade(nextRecharge.price);
-
-        return { currentRechargeLevel: nextLevel };
-      }
-
-      return state;
-    }),
-
   addScore: points =>
     set(state => {
       if (state.currentEnergy >= points) {
@@ -139,6 +91,19 @@ export const useProgressStore = create<ProgressState>((set, get) => ({
         };
       }
       return state;
+    }),
+
+  addReward: points =>
+    set(state => {
+      const newScore = state.coins + points;
+      const newLevel = computeLevelByScore(newScore);
+      const currentScore = newScore - (newLevel.level === 0 ? 0 : levelScores[newLevel.level - 1]);
+
+      get().checkPossibleUpgrades();
+      return {
+        coins: newScore,
+        currentScore,
+      };
     }),
 
   upgrade: upgradePrice => {

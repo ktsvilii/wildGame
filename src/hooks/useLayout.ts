@@ -11,14 +11,15 @@ export const useLayout = () => {
   const { setScore } = useProgressStore();
   const { setDamage } = useDamageStore();
   const { setEnergy } = useEnergyStore();
-  const { setTasks } = useTasksStore();
+  const { setTasks, setCompletedTasks } = useTasksStore();
   const { setUpgradeLevels } = useUpgradeStore();
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const initApp = async () => {
       setLoading(true);
-      const { coins, settings, upgrades, fullEnergyRestore, lastEnergyUpdate } = await getOrCreateUser();
+      const { coins, settings, upgrades, completedTasks, fullEnergyRestore, lastEnergyUpdate } =
+        await getOrCreateUser();
       const tasks = await fetchTasks();
 
       const now = Date.now();
@@ -40,6 +41,7 @@ export const useLayout = () => {
       setDamage(settings.currentDamage);
       setUpgradeLevels(upgrades.currentEnergyLevel, upgrades.currentDamageLevel, upgrades.currentRechargeLevel);
       setTasks(tasks);
+      setCompletedTasks(completedTasks);
 
       setLoading(false);
     };

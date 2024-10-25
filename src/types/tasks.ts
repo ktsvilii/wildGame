@@ -1,9 +1,8 @@
 export interface Task {
-  id: number;
+  id: string;
   createdAt: string;
   title: string;
   description: string;
   href: string;
   reward: number;
-  completed: boolean;
 }
