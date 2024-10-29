@@ -1,15 +1,12 @@
 import { useEffect } from 'react';
-import { useEnergyStore } from '../../stores/useEnergyStore';
-import { useUpgradeStore } from '../../stores/useUpgradeStore';
-import { RechargeLevels } from '../../types/upgrades';
+import { useUserStore } from '../../stores/useUserStore';
 
 export const useEnergyRegeneration = () => {
-  const { currentEnergy, maxEnergy, regenerateEnergy } = useEnergyStore();
-  const { currentRechargeLevel } = useUpgradeStore();
+  const { regenerateEnergy, userData } = useUserStore();
 
   useEffect(() => {
-    const timerId = setInterval(regenerateEnergy, RechargeLevels[currentRechargeLevel].speed);
+    const timerId = setInterval(regenerateEnergy, userData?.stats.recharge);
 
     return () => clearInterval(timerId);
-  }, [currentEnergy, currentRechargeLevel, maxEnergy, regenerateEnergy]);
+  }, [userData?.stats.energy, userData?.upgrades.rechargeLevel, userData?.stats.maxEnergy, regenerateEnergy]);
 };

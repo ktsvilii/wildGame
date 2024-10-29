@@ -1,53 +1,43 @@
 import { useEffect, useState } from 'react';
 import { fetchTasks, getOrCreateUser } from '../api';
 import { useTasksStore } from '../stores/useTasksStore';
-import { useProgressStore } from '../stores/useProgressStore';
-import { useDamageStore } from '../stores/useDamageStore';
-import { useEnergyStore } from '../stores/useEnergyStore';
-import { useUpgradeStore } from '../stores/useUpgradeStore';
-import { RechargeLevels } from '../types/upgrades';
+import { useUserStore } from '../stores/useUserStore';
 
 export const useLayout = () => {
-  const { setScore } = useProgressStore();
-  const { setDamage } = useDamageStore();
-  const { setEnergy } = useEnergyStore();
   const { setTasks, setCompletedTasks } = useTasksStore();
-  const { setUpgradeLevels } = useUpgradeStore();
+  const { setUserData } = useUserStore();
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const initApp = async () => {
       setLoading(true);
-      const { coins, settings, upgrades, completedTasks, fullEnergyRestore, lastEnergyUpdate } =
-        await getOrCreateUser();
+      const userData = await getOrCreateUser();
       const tasks = await fetchTasks();
 
       const now = Date.now();
+      let energy = 0;
 
-      if (now >= fullEnergyRestore) {
-        setEnergy(settings.maxEnergy, settings.maxEnergy);
+      if (now >= userData.full) {
+        energy = userData.stats.maxEnergy;
       } else {
-        const elapsedTime = (now - lastEnergyUpdate) / 1000;
-        const rechargeSpeed = RechargeLevels[upgrades.currentRechargeLevel].speed / 1000;
+        const elapsedTime = (now - userData.lastEnergyUpdate) / 1000;
+        const rechargeSpeed = userData.stats.recharge / 1000;
 
-        const rechargedEnergy = settings.currentEnergy + elapsedTime * rechargeSpeed;
+        const rechargedEnergy = userData.stats.energy + elapsedTime * rechargeSpeed;
 
-        const finalEnergy = Math.floor(Math.min(rechargedEnergy, settings.maxEnergy));
+        const finalEnergy = Math.floor(Math.min(rechargedEnergy, userData.stats.maxEnergy));
 
-        setEnergy(finalEnergy, settings.maxEnergy);
+        energy = finalEnergy;
       }
 
-      setScore(coins);
-      setDamage(settings.currentDamage);
-      setUpgradeLevels(upgrades.currentEnergyLevel, upgrades.currentDamageLevel, upgrades.currentRechargeLevel);
+      setUserData({ ...userData, stats: { ...userData.stats, energy } });
       setTasks(tasks);
-      setCompletedTasks(completedTasks);
 
       setLoading(false);
     };
 
     initApp();
-  }, [setDamage, setEnergy, setScore, setTasks, setUpgradeLevels]);
+  }, [setCompletedTasks, setTasks, setUserData]);
 
   return { loading };
 };

@@ -1,41 +1,42 @@
 import { FC } from 'react';
 import { useTasksStore } from '../../stores/useTasksStore';
-import { useProgressStore } from '../../stores/useProgressStore';
 import { completeTask } from '../../api';
 import { Task } from '../../types/tasks';
 import { getTelegram } from '../../services/telegram';
-import { useUpgradeStore } from '../../stores/useUpgradeStore';
+import { useUserStore } from '../../stores/useUserStore';
 
 export const Tasks: FC = () => {
   const { tasks, completedTasks, addCompletedTask } = useTasksStore();
-  const { coins, currentScore, addReward } = useProgressStore();
-  const { checkIsPossibleUpgradeEnergy, checkIsPossibleUpgradeDamage, checkIsPossibleUpgradeRecharge } =
-    useUpgradeStore();
+  const { userData, addReward, checkPossibleUpgrades } = useUserStore();
   const { tg } = getTelegram();
 
+  const handleStoreUpdate = (
+    completedTasks: string[],
+    task: Task,
+    coins: number,
+    currentScore: number,
+    reward: number,
+    id: string,
+  ) => {
+    completeTask(completedTasks, task, coins, currentScore);
+    addReward(reward);
+    addCompletedTask(id);
+    checkPossibleUpgrades();
+  };
+
   const handleTaskClick = (task: Task) => {
+    if (!userData) return;
+
     const { id, href, reward } = task;
     const isInternalLink = href.includes('t.me/');
+    const { coins, currentScore } = userData;
 
     if (isInternalLink) {
       tg.openTelegramLink(href);
-      completeTask(completedTasks, task, coins, currentScore);
-      addReward(reward);
-      addCompletedTask(id);
-      checkIsPossibleUpgradeEnergy();
-      checkIsPossibleUpgradeDamage();
-      checkIsPossibleUpgradeRecharge();
     } else {
       tg.openLink(href);
-      completeTask(completedTasks, task, coins, currentScore);
-      addReward(reward);
-      addCompletedTask(id);
-      checkIsPossibleUpgradeEnergy();
-      checkIsPossibleUpgradeDamage();
-      checkIsPossibleUpgradeRecharge();
     }
-
-    return;
+    handleStoreUpdate(completedTasks, task, coins, currentScore, reward, id);
   };
 
   return (

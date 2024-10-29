@@ -1,6 +1,8 @@
 import database from '../services/database';
 import { getTelegram } from '../services/telegram';
 import { Task } from '../types/tasks';
+import { Upgrades, Stats } from '../types/user';
+import { computeLevelByScore } from '../utils';
 
 const { user } = getTelegram();
 
@@ -20,18 +22,19 @@ export const getOrCreateUser = async () => {
 
   const newUser = {
     telegramId: USER_ID,
-    level: { level: 1, totalPoints: 50 },
+    level: computeLevelByScore(0),
     coins: 0,
     currentScore: 0,
     upgrades: {
-      currentEnergyLevel: 1,
-      currentDamageLevel: 1,
-      currentRechargeLevel: 1,
+      energyLevel: 1,
+      damageLevel: 1,
+      rechargeLevel: 1,
     },
-    settings: {
-      currentDamage: 1,
-      currentEnergy: 500,
+    stats: {
+      damage: 1,
+      energy: 500,
       maxEnergy: 500,
+      recharge: 1500,
     },
     fullEnergyRestore: null,
     lastEnergyUpdate: null,
@@ -45,35 +48,29 @@ export const getOrCreateUser = async () => {
 
 export const updateCoinsAndSettings = async (
   coins: number,
-  currentEnergy: number,
-  currentDamage: number,
-  maxEnergy: number,
+  newStats: Stats,
   fullEnergyRestore: number,
   lastEnergyUpdate: number,
 ) => {
   await database
     .from('users')
-    .update({ coins, settings: { currentEnergy, currentDamage, maxEnergy }, fullEnergyRestore, lastEnergyUpdate })
+    .update({ coins, stats: newStats, fullEnergyRestore, lastEnergyUpdate })
     .eq('telegramId', USER_ID);
 };
 
 export const handleUpgrade = async (
-  currentEnergyLevel: number,
-  currentDamageLevel: number,
-  currentRechargeLevel: number,
-  currentEnergy: number,
-  currentDamage: number,
-  maxEnergy: number,
+  newCoins: number,
+  newCurrentScore: number,
+  newStats: Stats,
+  newUpgrades: Upgrades,
 ) => {
   await database
     .from('users')
     .update({
-      upgrades: {
-        currentEnergyLevel,
-        currentDamageLevel,
-        currentRechargeLevel,
-      },
-      settings: { currentEnergy, currentDamage, maxEnergy },
+      coins: newCoins,
+      currentScore: newCurrentScore,
+      upgrades: newUpgrades,
+      stats: newStats,
     })
     .eq('telegramId', USER_ID);
 };

@@ -1,14 +1,14 @@
 import { FC } from 'react';
-import { useProgressStore } from '../stores/useProgressStore';
+import { useUserStore } from '../stores/useUserStore';
 
 const ProgressBar: FC = () => {
-  const { currentScore, level } = useProgressStore();
+  const { userData } = useUserStore();
 
   return (
     <div className='w-72 mt-5'>
-      <p>Level: {level.level + 1}</p>
+      <p>Level: {(userData?.level.level ?? 0) + 1}</p>
 
-      <progress className='progress' value={currentScore} max={level.totalPoints}></progress>
+      <progress className='progress' value={userData?.currentScore} max={userData?.level.totalPoints}></progress>
     </div>
   );
 };

@@ -15,12 +15,7 @@ const BOSS_IMAGES = [bossImage1, bossImage2, bossImage3];
 export const Farm: FC = () => {
   useEnergyRegeneration();
 
-  const {
-    level: { level },
-    imageRef,
-    handleBossClick,
-    handleTouchStart,
-  } = useBossClickHandler();
+  const { level, imageRef, handleBossClick, handleTouchStart } = useBossClickHandler();
 
   const isTouchDevice = useRef<boolean>(false);
 
@@ -34,7 +29,7 @@ export const Farm: FC = () => {
       <ScoreBoard />
       <button
         ref={imageRef}
-        style={{ backgroundImage: `url(${BOSS_IMAGES[level]})` }}
+        style={{ backgroundImage: `url(${BOSS_IMAGES[level?.level ?? 0]})` }}
         className={`${styles.image} relative`}
         onClick={isTouchDevice.current ? undefined : handleBossClick}
         onTouchStart={isTouchDevice.current ? handleTouchStart : undefined}

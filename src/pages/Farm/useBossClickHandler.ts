@@ -1,40 +1,33 @@
 import { useRef } from 'react';
-import styles from './Farm.module.scss';
-import { useProgressStore } from '../../stores/useProgressStore';
-import { useDamageStore } from '../../stores/useDamageStore';
-import { useEnergyStore } from '../../stores/useEnergyStore';
 import { updateCoinsAndSettings } from '../../api';
-import { useUpgradeStore } from '../../stores/useUpgradeStore';
-import { RechargeLevels } from '../../types/upgrades';
 import { useDebounce } from '../../hooks/useDebounce';
+import { useUserStore } from '../../stores/useUserStore';
+import styles from './Farm.module.scss';
 
 export const useBossClickHandler = () => {
-  const { level, coins, addScore } = useProgressStore();
-  const { currentDamage } = useDamageStore();
-  const { currentEnergy, maxEnergy, spendEnergy } = useEnergyStore();
-  const { currentRechargeLevel } = useUpgradeStore();
+  const { hitBoss, userData } = useUserStore();
 
   const imageRef = useRef<HTMLButtonElement | null>(null);
   const debouncedUpdateCoinsAndSettings = useDebounce(updateCoinsAndSettings, 300);
 
   const handleBossInteraction = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
-    if (currentEnergy - currentDamage >= 0) {
+    if (userData && userData.stats.energy - userData.stats.damage >= 0) {
+      const {
+        coins,
+        stats: { energy, damage, maxEnergy, recharge },
+      } = userData;
       const rect = event.currentTarget.getBoundingClientRect();
       const x = 'touches' in event ? event.touches[0].clientX - rect.left : event.clientX - rect.left;
       const y = 'touches' in event ? event.touches[0].clientY - rect.top : event.clientY - rect.top;
 
-      addScore(currentDamage);
-      spendEnergy(currentDamage);
+      hitBoss(damage);
 
       const lastEnergyUpdate = new Date().getTime();
-      const fullEnergyRestore =
-        lastEnergyUpdate + (maxEnergy - (currentEnergy + currentDamage)) * RechargeLevels[currentRechargeLevel].speed;
+      const fullEnergyRestore = lastEnergyUpdate + (maxEnergy - (energy + damage)) * recharge;
 
       debouncedUpdateCoinsAndSettings(
-        coins + currentDamage,
-        currentEnergy,
-        currentDamage,
-        maxEnergy,
+        coins + damage,
+        { energy, damage, maxEnergy, recharge },
         fullEnergyRestore,
         lastEnergyUpdate,
       );
@@ -44,7 +37,7 @@ export const useBossClickHandler = () => {
 
       const plusOne = document.createElement('div');
       plusOne.classList.add(`${styles.increment}`);
-      plusOne.textContent = `${currentDamage}`;
+      plusOne.textContent = `${damage}`;
       plusOne.style.left = `${x + randomX}px`;
       plusOne.style.top = `${y + randomY}px`;
 
@@ -73,5 +66,5 @@ export const useBossClickHandler = () => {
     handleBossInteraction(event);
   };
 
-  return { handleBossClick: handleBossInteraction, handleTouchStart, imageRef, level };
+  return { handleBossClick: handleBossInteraction, handleTouchStart, imageRef, level: userData?.level };
 };
